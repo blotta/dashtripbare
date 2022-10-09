@@ -1,27 +1,29 @@
 import { View } from 'react-native'
 import React, {useState} from 'react'
+import { Link, useTheme } from '@react-navigation/native';
 import { Button, Text, TextInput } from 'react-native-paper'
 import Loading from '../components/Loading';
-import { Link, useTheme } from '@react-navigation/native'
 
-export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function SignupScreen() {
+    const theme = useTheme();
 
-  const theme = useTheme();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  // const { loading, signupEmailAndPassword } = useSignup();
   const [loading, setLoading] = useState(false);
 
-  const handleLoginPress = () => {
+  const handleRegisterPress = () => {
+    // signupEmailAndPassword(email, password);
+  };
 
-  }
   return (
     <View style={{flex: 1, padding: 10, alignItems: 'stretch', justifyContent: 'space-evenly'}}>
-        <Text
+      <Text
         variant="headlineSmall"
         style={{ textAlign: "center", textTransform: "uppercase" }}
       >
-        Login
+        Registrar
       </Text>
 
       <View>
@@ -33,11 +35,16 @@ export default function LoginScreen() {
           onChangeText={setEmail}
         />
         <TextInput
+          style={{ marginBottom: 10 }}
           mode="flat"
           placeholder="senha"
-          secureTextEntry={true}
           value={password}
           onChangeText={setPassword}
+        />
+        <TextInput
+          style={{ marginBottom: 10 }}
+          mode="flat"
+          placeholder="confimação de senha"
         />
       </View>
 
@@ -49,20 +56,21 @@ export default function LoginScreen() {
 
       {!loading && (
         <>
-          <Button mode="contained" uppercase onPress={handleLoginPress}>
-            Login
+          <Button mode="contained" uppercase onPress={handleRegisterPress}>
+            Registrar
           </Button>
+
           <Text style={{alignSelf: 'center'}}>
-            Não possui conta?{" "}
+            Já possui uma conta?{" "}
             <Link
-              to={{ screen: "Signup" }}
+              to={{ screen: "Login" }}
               style={{ color: theme.colors.primary }}
             >
-              Registrar
+              Faça o login
             </Link>
           </Text>
         </>
       )}
     </View>
-  )
+  );
 }
