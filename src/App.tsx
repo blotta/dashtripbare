@@ -11,7 +11,8 @@ import {
   DefaultTheme as NavigationDefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-
+import { AuthContextProvider } from "./context/AuthContext";
+import Routes from "./routes";
 
 const theme = {
   ...PaperDefaultTheme,
@@ -24,14 +25,14 @@ const theme = {
   },
 };
 
-
 export default function App() {
-  const user = false;
   return (
-    <PaperProvider theme={theme}>
-      <NavigationContainer theme={theme}>
-        {user ? <LoggedInRoutes /> : <NotLoggedInRoutes />}
-      </NavigationContainer>
-    </PaperProvider>
+    <AuthContextProvider>
+      <PaperProvider theme={theme}>
+        <NavigationContainer theme={theme}>
+          <Routes />
+        </NavigationContainer>
+      </PaperProvider>
+    </AuthContextProvider>
   );
 }

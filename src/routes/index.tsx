@@ -1,10 +1,15 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import { useAuthContext } from '../hooks/useAuthContext'
+import LoggedInRoutes from './loggedin.routes'
+import NotLoggedInRoutes from './notloggedin.routes'
 
-export function LoggedIn() {
+export default function Routes() {
+  const {user} = useAuthContext();
+
   return (
-    <View>
-      <Text>index</Text>
-    </View>
+    <>
+      {user ? <LoggedInRoutes /> : <NotLoggedInRoutes />}
+    </>
   )
 }

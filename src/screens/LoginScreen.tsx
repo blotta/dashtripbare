@@ -1,8 +1,9 @@
-import { View } from 'react-native'
+import { View, Alert } from 'react-native'
 import React, {useState} from 'react'
 import { Button, Text, TextInput } from 'react-native-paper'
 import Loading from '../components/Loading';
 import { Link, useTheme } from '@react-navigation/native'
+import { useLogin } from '../hooks/appAuth';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -10,10 +11,12 @@ export default function LoginScreen() {
 
   const theme = useTheme();
 
-  const [loading, setLoading] = useState(false);
+  const { loginEmailAndPassword, loading } = useLogin((err) => Alert.alert(err.message));
 
   const handleLoginPress = () => {
-
+    if (email && password) {
+      loginEmailAndPassword(email, password)
+    }
   }
   return (
     <View style={{flex: 1, padding: 10, alignItems: 'stretch', justifyContent: 'space-evenly'}}>

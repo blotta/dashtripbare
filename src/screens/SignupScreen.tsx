@@ -1,8 +1,9 @@
-import { View } from 'react-native'
+import { View, Alert } from 'react-native'
 import React, {useState} from 'react'
 import { Link, useTheme } from '@react-navigation/native';
 import { Button, Text, TextInput } from 'react-native-paper'
 import Loading from '../components/Loading';
+import { useSignup } from '../hooks/appAuth';
 
 export default function SignupScreen() {
     const theme = useTheme();
@@ -10,11 +11,10 @@ export default function SignupScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // const { loading, signupEmailAndPassword } = useSignup();
-  const [loading, setLoading] = useState(false);
+  const { loading, signupEmailAndPassword } = useSignup((err) => Alert.alert(err.message));
 
   const handleRegisterPress = () => {
-    // signupEmailAndPassword(email, password);
+    signupEmailAndPassword(email, password);
   };
 
   return (
@@ -38,6 +38,7 @@ export default function SignupScreen() {
           style={{ marginBottom: 10 }}
           mode="flat"
           placeholder="senha"
+          secureTextEntry
           value={password}
           onChangeText={setPassword}
         />

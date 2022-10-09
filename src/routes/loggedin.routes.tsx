@@ -9,10 +9,12 @@ import { Drawer } from "react-native-paper";
 import HomeScreen from "../screens/HomeScreen";
 
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useLogout } from "../hooks/appAuth";
 
 const DrawerNav = createDrawerNavigator();
 
 export default function LoggedInRoutes() {
+  const {logout } = useLogout();
   return (
     <DrawerNav.Navigator
       initialRouteName="Home"
@@ -24,7 +26,7 @@ export default function LoggedInRoutes() {
             </Drawer.Section>
             <DrawerItem
               label="Sair"
-              onPress={() => {}}
+              onPress={logout}
               icon={({ color, size }) => (
                 <MaterialIcons name="logout" color={color} size={size} />
               )}
