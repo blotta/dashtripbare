@@ -7,7 +7,7 @@ export declare global {
             Home: undefined;
             Trips: undefined;
             Vehicles: undefined;
-            VehicleForm: undefined;
+            VehicleForm: string | undefined;
         }
     }
 }
