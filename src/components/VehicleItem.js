@@ -1,14 +1,11 @@
-import { View } from "react-native";
 import React from "react";
 import { Button, Card, Text } from "react-native-paper";
-import { VehicleProp } from "../models/Vehicle";
 
-import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import useMoment from "../hooks/useMoment";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function VehicleItem({ item }) {
+export default function VehicleItem({ item, buttonOptions, selected }) {
   const { moment } = useMoment();
   const navigation = useNavigation();
 
@@ -30,8 +27,9 @@ export default function VehicleItem({ item }) {
   }
 
   return (
-    <Card style={{ marginBottom: 10 }}>
+    <Card mode={selected ? 'outlined' : 'elevated'} style={{ marginBottom: 10 }}>
       <Card.Title
+
         title={item.name}
         titleVariant="titleLarge"
         left={({size}) => <MaterialCommunityIcons name={icon} size={size} />}
@@ -39,17 +37,14 @@ export default function VehicleItem({ item }) {
       <Card.Content>
         <Text>{moment().to(item.created_at?.toDate())}</Text>
       </Card.Content>
+      {buttonOptions && (
       <Card.Actions>
-        <Button
-          uppercase
-          mode="text"
-          onPress={() =>
-            navigation.navigate("VehicleForm", { vehicleId: item.id })
-          }
-        >
-          Editar
-        </Button>
+        {buttonOptions.map(({text, cb}) => (
+          <Button key={text} uppercase mode="text" onPress={cb}>{text}</Button>
+        ))}
       </Card.Actions>
+
+      )}
     </Card>
   );
 }
