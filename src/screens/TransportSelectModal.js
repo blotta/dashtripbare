@@ -121,6 +121,7 @@ export default function TransportSelectModal() {
       <View style={{ flexDirection: "row", justifyContent: "center" }}>
         {transportTypes.map((type) => (
           <IconButton
+            key={type.name}
             selected={type.name == selectedType}
             // disabled={type.needVehicle && !type.hasVehicle}
             onPress={() => {

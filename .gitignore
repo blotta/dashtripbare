@@ -55,4 +55,5 @@ web-build/
 dist/
 
 
+.env
 android/app/google-services.json

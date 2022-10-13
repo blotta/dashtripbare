@@ -1,7 +1,8 @@
 import { View  } from "react-native";
 import React from "react";
 import {Text} from 'react-native-paper'
-import { StatusBar } from "expo-status-bar";
+
+import Constants from "expo-constants";
 
 export default function HomeScreen() {
   return (
