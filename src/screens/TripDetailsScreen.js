@@ -1,6 +1,6 @@
-import { View, Image, ScrollView } from "react-native";
+import { View, Image, ScrollView, Dimensions } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Card, Divider, Text } from "react-native-paper";
+import { Button, Card, Divider, Text, useTheme } from "react-native-paper";
 import Loading from "../components/Loading";
 import firestore from "@react-native-firebase/firestore";
 import {
@@ -12,8 +12,11 @@ import TransportIcon from "../components/TransportIcon";
 import useMoment from "../hooks/useMoment";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getStatus } from "../models/Trip";
+import { BarChart } from "react-native-chart-kit";
+import { barChartConfig, chartConfig } from "../config/chart";
 
 export default function TripDetailsScreen({ route }) {
+  const theme = useTheme()
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const { moment } = useMoment();
@@ -72,6 +75,14 @@ export default function TripDetailsScreen({ route }) {
     return <Loading />;
   }
 
+  const data = {
+    labels: ["January", "February", "March", "April", "May", "June"],
+    datasets: [
+      {
+        data: [20, 45, 28, 80, 99, 43],
+      },
+    ],
+  };
   return (
     <ScrollView style={{ padding: 10, flex: 1 }}>
       <View>
@@ -128,6 +139,18 @@ export default function TripDetailsScreen({ route }) {
           <Text variant="titleSmall">Destino</Text>
           <Text variant="titleMedium">{trip.destination.description}</Text>
         </View>
+      </View>
+      <View>
+        <BarChart
+          style={{color: theme.colors.secondary, marginVertical: 30}}
+          data={data}
+          width={Dimensions.get("window").width - 20}
+          height={220}
+          yAxisLabel="$"
+          chartConfig={barChartConfig}
+          verticalLabelRotation={30}
+          withVerticalLabels={false}
+        />
       </View>
     </ScrollView>
   );
