@@ -4,6 +4,7 @@ import TripSetupScreen from "../screens/TripSetupScreen";
 import TransportSelectModal from "../screens/TransportSelectModal";
 import { TripProvider } from "../context/TripManager";
 import TripDuringScreen from "../screens/TripDuringScreen";
+import TripDetailsScreen from "../screens/TripDetailsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,13 @@ export default function LoggedInTripRoutes() {
               headerShown: false
             }}
             component={TripDuringScreen}
+          />
+          <Stack.Screen
+            name="TripDetails"
+            options={{
+              title: "Detalhes do Percurso",
+            }}
+            component={TripDetailsScreen}
           />
         </Stack.Group>
 

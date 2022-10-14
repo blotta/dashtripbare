@@ -2,25 +2,53 @@ import { View } from "react-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Text, TextInput } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import firestore from "@react-native-firebase/firestore";
 import { TRANSPORTS } from "../models/Transport";
 import TransportIcon from "../components/TransportIcon";
 import MapSelection from "../components/MapSelection";
 
 import * as Location from "expo-location";
 import AddressSearch from "../components/AddressSearch";
-import { useTrip } from "../context/TripManager";
+import { calcRegion, tripMarkers, useTrip } from "../context/TripManager";
 import MapView, { Marker } from "react-native-maps";
+import firestore from "@react-native-firebase/firestore";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 export default function TripSetupScreen({ route }) {
   const navigation = useNavigation();
+  const { user } = useAuthContext();
 
   const { trip, dispatchTrip } = useTrip();
   // console.log(JSON.stringify(trip, null, 2));
 
-  const handleStartTripPress = () => {
+  const handleStartTripPress = async () => {
+    const transport = { ...trip.transport };
+    if (transport.vehicle) {
+      transport.vehicle = await firestore()
+        .collection("vehicles")
+        .doc(transport.vehicle.id);
+    }
+    const ftrip = {
+      ...trip,
+      userId: user.uid,
+      status: "started",
+      created_at: firestore.FieldValue.serverTimestamp(),
+      transport: transport,
+    };
+    const doc = await firestore().collection("trips").add(ftrip);
+
+    const snap = await doc.get();
+    const data = await snap.data();
+    console.log('doc data', data);
+
+    dispatchTrip("START_TRIP", {
+      id: doc.id,
+      created_at: data.created_at.toDate(),
+      status: data.status,
+      // vvvvv: await (await data.transport.vehicle.get()).data()
+    });
+
     navigation.navigate("TripDuring");
-  }
+  };
 
   async function startLoc() {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -54,7 +82,9 @@ export default function TripSetupScreen({ route }) {
         const location = gpsToAppLocation(pos, address);
         // console.log("gpsLocation", location);
         dispatchTrip("SET_CURRENT_COORDS", location.coords);
-        dispatchTrip("SET_ORIGIN", location);
+        if (!trip.origin) {
+          dispatchTrip("SET_ORIGIN", location);
+        }
       } catch (err) {
         console.error("gpsLocation", err);
       }
@@ -86,55 +116,11 @@ export default function TripSetupScreen({ route }) {
   }, [route.params?.transportType, route.params?.vehicleId]);
 
   const region = useMemo(() => {
-    const ret = {
-      latitude: -23.56387116203152,
-      longitude: -46.65244831533241,
-      latitudeDelta: 0.02,
-      longitudeDelta: 0.01,
-    };
-    if (trip.origin && trip.destination) {
-      let o = trip.origin.coords;
-      let d = trip.destination.coords;
-      ret.latitude = (o.lat + d.lat) / 2;
-      ret.longitude = (o.lng + d.lng) / 2;
-      ret.latitudeDelta = Math.abs(o.lat - d.lat) + 0.01;
-      ret.longitudeDelta = Math.abs(o.lng - d.lng) + 0.01;
-    } else if (trip.origin) {
-      ret.latitude = trip.origin.coords.lat;
-      ret.longitude = trip.origin.coords.lng;
-    } else if (trip.destination) {
-      ret.latitude = trip.destination.coords.lat;
-      ret.longitude = trip.destination.coords.lng;
-    } else if (trip.currentCoords) {
-      ret.latitude = trip.currentCoords.lat;
-      ret.longitude = trip.currentCoords.lng;
-    }
-    return ret;
+    return calcRegion(trip);
   }, [trip]);
 
   const markers = useMemo(() => {
-    const ret = [];
-    if (trip.origin) {
-      ret.push({
-        id: "origin",
-        title: "Origem",
-        coords: {
-          latitude: trip.origin.coords.lat,
-          longitude: trip.origin.coords.lng,
-        },
-      });
-    }
-    if (trip.destination) {
-      ret.push({
-        id: "destination",
-        title: "Destino",
-        coords: {
-          latitude: trip.destination.coords.lat,
-          longitude: trip.destination.coords.lng,
-        },
-      });
-    }
-    return ret;
+    return tripMarkers(trip);
   }, [trip]);
 
   return (
