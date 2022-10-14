@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button, Divider, IconButton, Menu, Text } from "react-native-paper";
 import MapView, { Marker } from "react-native-maps";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -12,7 +12,7 @@ import {
 import TransportIcon from "../components/TransportIcon";
 import useMoment from "../hooks/useMoment";
 import firestore from "@react-native-firebase/firestore";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { getDistance, getSpeed } from "geolib";
 
 export default function TripDuringScreen() {

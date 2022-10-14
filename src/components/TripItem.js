@@ -40,7 +40,7 @@ export default function TripItem({ item }) {
   
   return (
     <Card mode="outlined" style={{ marginBottom: 10 }}>
-      <Card.Cover source={{ uri: "https://picsum.photos/700" }} />
+      <Card.Cover source={{ uri: "https://via.placeholder.com/700" }} />
       <Card.Content>
         <View>
           <View

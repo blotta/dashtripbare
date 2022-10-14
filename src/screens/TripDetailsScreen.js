@@ -88,7 +88,7 @@ export default function TripDetailsScreen({ route }) {
       <View>
         <Image
           style={{ width: "100%", height: 200, resizeMode: "cover" }}
-          source={{ uri: "https://picsum.photos/700" }}
+          source={{ uri: "https://via.placeholder.com/700" }}
         />
       </View>
       <View>
